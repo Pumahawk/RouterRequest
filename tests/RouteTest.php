@@ -43,5 +43,27 @@ final class RouteTest extends TestCase {
       $route = new Route($nome, $pattern, $opzioni);
       $ris = $route -> match('/test3-123456');
       $this -> assertSame('123456', $ris['matches']['id']);
+
+      $pattern = '/test3-{id:(dd)?[0-9]*}';
+      $route = new Route($nome, $pattern, $opzioni);
+      $ris = $route -> match('/test3-dd123456');
+      $this -> assertSame('dd123456', $ris['matches']['id']);
+  }
+  /**
+    @depends testComplicatedPattern1
+  */
+  public function testComplicatedPattern2() {
+
+      $nome = 'test3';
+      $pattern = '/test3-{id:[0-9]kk(dd)?_[0-9]*}';
+      $opzioni = ['opzione1', 'opzione2'];
+      $route = new Route($nome, $pattern, $opzioni);
+
+      $ris = $route -> match('/test3-5kk_123');
+      $this -> assertSame('5kk_123', $ris['matches']['id']);
+
+      $ris = $route -> match('/test3-5kkdd_123');
+      $this -> assertSame('5kkdd_123', $ris['matches']['id']);
+
   }
 }
